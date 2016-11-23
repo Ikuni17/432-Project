@@ -106,6 +106,7 @@ def test_insert3():
     for values in range(len(valuesToInsert)):
         check = Bin_Hashing.insert(valuesToInsert[values])
         #print(Bin_Hashing.lookup(valuesToInsert[values]))
+        #Bin_Hashing.delete(valuesToInsert[values])
         if check is True:
             count+=1
         else:
