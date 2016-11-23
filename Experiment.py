@@ -36,7 +36,8 @@ def hashFun(hashList, key):
     return index
 
 def hashFun2(key):
-    index = key % tableSize
+    somePrime = 7
+    index = (somePrime * key) % tableSize
     return index
 
 hashList1 = initHashList()
