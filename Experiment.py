@@ -8,7 +8,7 @@ import Perfect_Hashing
 import Bin_Hashing
 
 # Using a prime number for tableSize helps the hash functions
-tableSize = 104728
+tableSize = 104729
 quarterTable = int(tableSize / 4)
 # A list filled with None to represent an array
 hashTable = [None] * tableSize
