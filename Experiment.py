@@ -4,7 +4,7 @@ import random
 import sys
 import math
 import Cuckoo_Hashing
-import Perfect_Hashing
+#import Perfect_Hashing
 import Bin_Hashing
 import perfection
 
@@ -65,6 +65,12 @@ def hashFun4(key):
 
 hashFunctions = [hashFun1, hashFun2, hashFun3, hashFun4]
 
+def perfectHash(key):
+    somePrime = 15485863
+    k = 1234
+    index = ((k * key) % somePrime) % tableSize
+    return index
+
 # Reset hashTable
 def clearTable():
     global  hashTable
@@ -96,7 +102,7 @@ def test_insert2():
     count = 0
     count2 = 0
     for values in range(len(valuesToInsert)):
-        key = hashFun1(valuesToInsert[values])
+        key = perfectHash(valuesToInsert[values])
         if hashTable[key] is None:
             hashTable[key] = valuesToInsert[values]
             count += 1
@@ -131,7 +137,7 @@ print("Pagh Hash Function:")
 test_insert()
 print()
 clearTable()
-print("Simple Hash Function:")
+print("Perfect Hash Function:")
 test_insert2()
 print()
 clearTable()

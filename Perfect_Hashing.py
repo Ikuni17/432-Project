@@ -5,8 +5,8 @@ import timeit
 
 
 def testFun():
-    tableSize = 104729
-    valuesToInsert = random.sample(range(500000), tableSize)
+    tableSize = 1000003
+    valuesToInsert = random.sample(range(10000000), tableSize)
     function = perfection.make_hash(valuesToInsert)
     print(function)
 
