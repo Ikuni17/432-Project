@@ -5,6 +5,7 @@
 \usepackage{multirow}
 \usepackage{array}
 \usepackage{amssymb}
+\usepackage{caption}
 
 %opening
 \title{Cuckoo Hashing: P5, Progress}
@@ -14,26 +15,36 @@
 \begin{document}
 
 \maketitle
+
+The initial setup for the experiment has been more difficult than we had presumed. Finding "good" hashing functions that map keys distinctly has been challenging because of the complexity of implementation of certain functions. Furthermore, the hash functions used in \cite{pagh} did not translate well and only map to about 20\% of the indexes in the array, presumably because of word size in different computer architectures. \par
+
+A Python package, perfection, was discovered which can derive a perfect hash function for a set of unique integers \cite{perfect}. It was tested on small sample sizes and proved to be correct, however it is quite slow when the set of integers is large, or the set of integers is randomly chosen from numbers exceeding 500,000. So, we will need to derive a large input set of integers, save it to an external file and derive the perfect hash function well before the experiment is set to be conducted. \par
+
+The last hashing method from \cite{erlingsson}, what we're calling "Bin Hashing", seems largely dependent on the hashing functions used. Our initial test runs have reached a load factor of $0.63$ -- $0.84$ using four hashing functions and dividing the hash table into four distinct quadrants for each hash function, but \cite{erlingsson} advertised this setup as $0.97$ load factor. Therefore, as previously stated, more research will need to be conducted into hashing functions and see if our results can become consistent with \cite{erlingsson}.\par
+
+A projected timeline has been produced and can be viewed in the table on the next page which shows internal deadlines for objectives to complete the project and the amount of work completed already. Additionally, a repository has been setup on Github for version control and can be viewed \href{https://github.com/Ikuni17/432-Project}{here}.
+
+
 \begin{center}
 \renewcommand{\arraystretch}{1.5}
 \begin{tabular}{| c | c | c | c |m{12.5cm}}
 \cline{1-4}
 \multicolumn{4}{| c |}{\large{Projected Timeline:}} \\ \cline{1-4}
-{\bf Date} & {\bf Task} & {\bf Personnel} & {\bf Complete} \\ \cline{1-4}
-Nov. 22 & Implement Cuckoo Hashing & Mike & \\ \cline{1-4}
-Nov. 22 & Implement Perfect Hashing & Matt & \\ \cline{1-4}
-Nov. 22 & Implement Bin Method & Brad & \\ \cline{1-4}
-Nov. 22 & Design Experiment & All & \\ \cline{1-4}
-Nov. 23 & P5 Due & All & \\ \cline{1-4}
-Nov. 27 & Implement Experiment Driver & All & \\ \cline{1-4}
+{\bf Date} & {\bf Objectives} & {\bf Personnel} & {\bf Complete} \\ \cline{1-4}
+Nov. 22 & Implement Perfect Hashing & Matt & 50\% \\ \cline{1-4}
+Nov. 22 & Implement Bin Method & Brad & \checkmark \\ \cline{1-4}
+Nov. 23 & P5 Due & All & \checkmark \\ \cline{1-4}
+Nov. 26 & Design Experiment & All & 40\% \\ \cline{1-4}
+Nov. 26 & Implement Cuckoo Hashing & Mike & \\ \cline{1-4}
+Nov. 27 & Implement Experiment Driver & All & 25\% \\ \cline{1-4}
 Nov. 28 & Code Review, Testing, \& Update & All & \\ \cline{1-4}
 Dec. 1 & Run Experiment & All & \\ \cline{1-4}
 Dec. 2 & Analyze Results & All & \\ \cline{1-4}
 Dec. 2 & Design Video & All & \\ \cline{1-4}
 Dec. 4 & Produce Video & All  & \\ \cline{1-4}
 Dec. 5 & P6 Due & All &   \\ \cline{1-4}
-
 \end{tabular}
+\captionof{table}{Group \#7's projected timeline and completed work thus far.}
 \end{center}
 
 \pagebreak
@@ -46,8 +57,8 @@ Pagh and, Rodler.
 Erlingsson, Manasse, and Mcsherry.
 \textit{A Cool and Practical Alternative to Traditional Hash Tables}.
 2006.
-\bibitem{wiki}
-\url{https://en.wikipedia.org/wiki/Perfect_hash_function}
+\bibitem{perfect}
+\url{https://github.com/eddieantonio/perfection}
 \end{thebibliography}
 \end{document}
 
