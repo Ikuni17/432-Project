@@ -6,6 +6,7 @@ import math
 import Cuckoo_Hashing
 import Perfect_Hashing
 import Bin_Hashing
+import perfection
 
 # Using a prime number for tableSize helps the hash functions
 tableSize = 104729
@@ -18,6 +19,8 @@ valuesToInsert = random.sample(range(sys.maxsize), tableSize)
 # This is the original C code: shift = 32 - (int)(log(tablesize)/log(2)+0.5);
 shift = 64 - int(math.log(tableSize) / math.log(2) + 0.5)
 
+#function = perfection.make_hash(valuesToInsert)
+#print(function)
 
 # This function is called to get values for hashFun, and when rehashing for Cuckoo
 def initHashList():
