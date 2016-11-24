@@ -3,13 +3,24 @@
 
 import Experiment
 
+maxLoop = 1
+
 def insert(value):
     # Iterate through all four hash functions until able to insert or return false if not able
-    for i in range(len(Experiment.hashFunctions)):
-        index = Experiment.hashFunctions[i](value)
-        if Experiment.hashTable[index] is None:
-            Experiment.hashTable[index] = value
-            return True
+    j = 0
+    while j < maxLoop:
+        for i in range(len(Experiment.hashFunctions)):
+            #indexOffset = Experiment.hashFunctions[i](value)
+            #realIndex = indexOffset + i * Experiment.quarterTable
+            realIndex = Experiment.hashFunctions[i](value)
+            if Experiment.hashTable[realIndex] is None:
+                Experiment.hashTable[realIndex] = value
+                return True
+            # This else statement actually fails to insert at a lower load factor
+            else:
+                # There is an element in the index so swap them. This is the Cuckoo step and previous value will try to be hashed
+                Experiment.hashTable[realIndex], value = value, Experiment.hashTable[realIndex]
+        j+=1
     #print("Unable to insert")
     return False
 

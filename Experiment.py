@@ -8,7 +8,8 @@ import Perfect_Hashing
 import Bin_Hashing
 
 # Using a prime number for tableSize helps the hash functions
-tableSize = 104729
+tableSize = 104728
+quarterTable = int(tableSize / 4)
 # A list filled with None to represent an array
 hashTable = [None] * tableSize
 # A list of values to insert, enough to reach a load factor of 1.0 theoretically
@@ -38,21 +39,25 @@ def paghHashFun(hashList, key):
 def hashFun1(key):
     somePrime = 1
     index = (somePrime * key) % tableSize
+    #index = (somePrime * key) % quarterTable
     return index
 
 def hashFun2(key):
     somePrime = 7
     index = (somePrime * key) % tableSize
+    #index = (somePrime * key) % quarterTable
     return index
 
 def hashFun3(key):
     somePrime = 11
     index = (somePrime * key) % tableSize
+    #index = (somePrime * key) % quarterTable
     return index
 
 def hashFun4(key):
     somePrime = 13
     index = (somePrime * key) % tableSize
+    #index = (somePrime * key) % quarterTable
     return index
 
 hashFunctions = [hashFun1, hashFun2, hashFun3, hashFun4]
