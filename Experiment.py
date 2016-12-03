@@ -4,14 +4,15 @@ import random
 import sys
 import math
 import Cuckoo_Hashing
-#import Perfect_Hashing
-import Bin_Hashing
+# import Perfect_Hashing
 import perfection
+import Bin_Hashing
 
 # Using a prime number for tableSize helps the hash functions
 tableSize = 100003
-#tableSize = 1000099
+halfTable = int(tableSize / 2)
 quarterTable = int(tableSize / 4)
+useHalfTable = False
 useQuarterTable = False
 # A list filled with None to represent an array
 hashTable = [None] * tableSize
@@ -21,8 +22,9 @@ valuesToInsert = random.sample(range(sys.maxsize), tableSize)
 # This is the original C code: shift = 32 - (int)(log(tablesize)/log(2)+0.5);
 shift = 64 - int(math.log(tableSize) / math.log(2) + 0.5)
 
-#function = perfection.make_hash(valuesToInsert)
-#print(function)
+
+# function = perfection.make_hash(valuesToInsert)
+# print(function)
 
 # This function is called to get values for hashFun, and when rehashing for Cuckoo
 def initHashList():
@@ -31,19 +33,24 @@ def initHashList():
         tempList.append(random.randint(1, sys.maxsize))
     return tempList
 
+
 # Stores the values used in hashFun
 hashList1 = initHashList()
 hashList2 = initHashList()
+
 
 def paghHashFun(hashList, key):
     index = (hashList[0] * key) ^ (hashList[1] * key) ^ (hashList[2] * key)
     index >>= shift
     return index
 
+
 # Division method
 def hashFun1(key):
     if useQuarterTable:
         return key % quarterTable
+    elif useHalfTable:
+        return key % halfTable
     else:
         return key % tableSize
 
@@ -51,9 +58,12 @@ def hashFun1(key):
 # Multiplication method
 def hashFun2(key):
     if useQuarterTable:
-        return math.floor(key/quarterTable) % quarterTable
+        return math.floor(key / quarterTable) % quarterTable
+    elif useHalfTable:
+        return math.floor(key / halfTable) % halfTable
     else:
         return math.floor(key / tableSize) % tableSize
+
 
 # Multiplication method variant
 def hashFun3(key):
@@ -62,6 +72,7 @@ def hashFun3(key):
         return math.floor(quarterTable * ((key * A) % 1))
     else:
         return math.floor(tableSize * ((key * A) % 1))
+
 
 # Folding method
 def hashFun4(key):
@@ -74,7 +85,10 @@ def hashFun4(key):
     else:
         return r % tableSize
 
-hashFunctions = [hashFun1, hashFun2, hashFun3, hashFun4]
+
+twoHashFunctions = [hashFun1, hashFun2]
+fourHashFunctions = [hashFun1, hashFun2, hashFun3, hashFun4]
+
 
 # This was just a test, not actually a perfect hash
 def perfectHash(key):
@@ -83,10 +97,12 @@ def perfectHash(key):
     index = ((k * key) % somePrime) % tableSize
     return index
 
+
 # Reset hashTable
 def clearTable():
-    global  hashTable
+    global hashTable
     hashTable = [None] * tableSize
+
 
 def test_insert():
     count = 0
@@ -102,13 +118,14 @@ def test_insert():
                 hashTable[key2] = valuesToInsert[values]
                 count += 1
             else:
-                #print("Double Collision moving to next element")
+                # print("Double Collision moving to next element")
                 count2 += 1
 
     print("Inserted: ", count)
     print("Not Inserted: ", count2)
-    print("Load Factor: ", (count/tableSize))
-    #print(hashTable)
+    print("Load Factor: ", (count / tableSize))
+    # print(hashTable)
+
 
 def test_insert2():
     count = 0
@@ -119,41 +136,67 @@ def test_insert2():
             hashTable[key] = valuesToInsert[values]
             count += 1
         else:
-            #print("Collision moving to next element")
+            # print("Collision moving to next element")
             count2 += 1
     print("Inserted: ", count)
     print("Not Inserted: ", count2)
     print("Load Factor: ", (count / tableSize))
-    #print(hashTable)
+    # print(hashTable)
+
 
 def test_insert3():
     count = 0
     count2 = 0
     for values in range(len(valuesToInsert)):
         check = Bin_Hashing.insert(valuesToInsert[values])
-        #print(Bin_Hashing.lookup(valuesToInsert[values]))
-        #Bin_Hashing.delete(valuesToInsert[values])
+        # print(Bin_Hashing.lookup(valuesToInsert[values]))
+        # Bin_Hashing.delete(valuesToInsert[values])
         if check is True:
-            count+=1
+            count += 1
         else:
-            count2+=1
+            count2 += 1
     print("Inserted: ", count)
     print("Not Inserted: ", count2)
     print("Load Factor: ", (count / tableSize))
-    #print(hashTable)
+    # print(hashTable)
+
+def test_insert4():
+    count = 0
+    count2 = 0
+    for values in range(len(valuesToInsert)):
+        check = Cuckoo_Hashing.cuckoo_insert(valuesToInsert[values])
+        # print(Bin_Hashing.lookup(valuesToInsert[values]))
+        # Bin_Hashing.delete(valuesToInsert[values])
+        if check is True:
+            count += 1
+        else:
+            count2 += 1
+    print("Inserted: ", count)
+    print("Not Inserted: ", count2)
+    print("Load Factor: ", (count / tableSize))
+
 
 print("Table Size: ", tableSize)
-#print()
-#print("Pagh Hash Function:")
-#test_insert()
-#print()
-#clearTable()
-#print("Perfect Hash Function:")
-#test_insert2()
-#print()
-#clearTable()
+# print()
+# print("Pagh Hash Function:")
+# test_insert()
+# print()
+# clearTable()
+# print("Perfect Hash Function:")
+# test_insert2()
+# print()
+clearTable()
+useQuarterTable = True
+useHalfTable = False
 print("Bin Hashing: ")
 test_insert3()
 print()
-#print(hashTable)
-#clearTable()
+# print(hashTable)
+clearTable()
+useQuarterTable = False
+useHalfTable = True
+print("Cuckoo Hashing: ")
+#test_insert4()
+print()
+# print(hashTable)
+clearTable()
