@@ -3,7 +3,8 @@
 
 import Experiment
 
-maxLoop = 1
+# Above 8 appears to make no difference in the load factor achieved
+maxLoop = 8
 
 def insert(value):
     # Iterate through all four hash functions until able to insert or return false if not able

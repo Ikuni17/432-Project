@@ -10,7 +10,9 @@ import perfection
 
 # Using a prime number for tableSize helps the hash functions
 tableSize = 104729
+#tableSize = 1000099
 quarterTable = int(tableSize / 4)
+useQuarterTable = False
 # A list filled with None to represent an array
 hashTable = [None] * tableSize
 # A list of values to insert, enough to reach a load factor of 1.0 theoretically
@@ -38,33 +40,43 @@ def paghHashFun(hashList, key):
     index >>= shift
     return index
 
-# Simple hash function from CSCI 232
+# Division method
 def hashFun1(key):
-    somePrime = 1
-    index = (somePrime * key) % tableSize
-    #index = (somePrime * key) % quarterTable
-    return index
+    if useQuarterTable:
+        return key % quarterTable
+    else:
+        return key % tableSize
 
+
+# Multiplication method
 def hashFun2(key):
-    somePrime = 7
-    index = (somePrime * key) % tableSize
-    #index = (somePrime * key) % quarterTable
-    return index
+    if useQuarterTable:
+        return math.floor(key/quarterTable) % quarterTable
+    else:
+        return math.floor(key / tableSize) % tableSize
 
+# Multiplication method variant
 def hashFun3(key):
-    somePrime = 11
-    index = (somePrime * key) % tableSize
-    #index = (somePrime * key) % quarterTable
-    return index
+    A = (math.sqrt(5) - 1) / 2
+    if useQuarterTable:
+        return math.floor(quarterTable * ((key * A) % 1))
+    else:
+        return math.floor(tableSize * ((key * A) % 1))
 
+# Folding method
 def hashFun4(key):
-    somePrime = 13
-    index = (somePrime * key) % tableSize
-    #index = (somePrime * key) % quarterTable
-    return index
+    r = 0
+    while key:
+        r, key = r + key % 100, key // 100
+
+    if useQuarterTable:
+        return r % quarterTable
+    else:
+        return r % tableSize
 
 hashFunctions = [hashFun1, hashFun2, hashFun3, hashFun4]
 
+# This was just a test, not actually a perfect hash
 def perfectHash(key):
     somePrime = 15485863
     k = 1234
