@@ -8,7 +8,7 @@ import math
 tableSize = 1049
 # tableSize = 100003
 # Maximum amount of attempts to "cuckoo" elements
-maxLoop = 10000
+maxLoop = 1000
 # Divide the table for two hash function mapping to distinct sections
 halfTable = int(tableSize / 2)
 useHalfTable = False
@@ -102,12 +102,12 @@ def binTester():
     count2 = 0
     for values in range(len(valuesToInsert)):
         check = binInsert(valuesToInsert[values])
-        # print(Bin_Hashing.lookup(valuesToInsert[values]))
-        # Bin_Hashing.delete(valuesToInsert[values])
+        #print(binLookup(valuesToInsert[values]))
         if check is True:
             count += 1
         else:
             count2 += 1
+        #binDelete(valuesToInsert[values])
     print("Inserted: ", count)
     print("Not Inserted: ", count2)
     print("Load Factor: ", (count / tableSize))
@@ -118,12 +118,12 @@ def cuckooTester():
     count2 = 0
     for values in range(len(valuesToInsert)):
         check = cuckooInsert(valuesToInsert[values])
-        # print(Bin_Hashing.lookup(valuesToInsert[values]))
-        # Bin_Hashing.delete(valuesToInsert[values])
+        #print(cuckooLookup(valuesToInsert[values]))
         if check is True:
             count += 1
         else:
             count2 += 1
+        #cuckooDelete(valuesToInsert[values])
     print("Inserted: ", count)
     print("Not Inserted: ", count2)
     print("Load Factor: ", (count / tableSize))
@@ -221,23 +221,23 @@ def cuckooDelete(value):
 
 def main():
     print("Table Size: ", tableSize)
-    # print("Perfect Hash Function:")
-    # perfectTester()
-    # print()
-    # print(hashTable)
-    # clearTable()
+    #print("Perfect Hash Function:")
+    #perfectTester()
+    #print(hashTable)
+    #print()
+    #clearTable()
     useQuarterTable = True
     useHalfTable = False
     print("Bin Hashing: ")
     binTester()
+    #print(hashTable)
     print()
-    # print(hashTable)
     clearTable()
     useQuarterTable = False
     useHalfTable = True
     print("Cuckoo Hashing: ")
     cuckooTester()
+    #print(hashTable)
     print()
-    # print(hashTable)
 
 main()
