@@ -9,7 +9,7 @@ import Bin_Hashing
 import perfection
 
 # Using a prime number for tableSize helps the hash functions
-tableSize = 104729
+tableSize = 100003
 #tableSize = 1000099
 quarterTable = int(tableSize / 4)
 useQuarterTable = False
@@ -142,18 +142,18 @@ def test_insert3():
     print("Load Factor: ", (count / tableSize))
     #print(hashTable)
 
-
 print("Table Size: ", tableSize)
-print()
-print("Pagh Hash Function:")
-test_insert()
-print()
-clearTable()
-print("Perfect Hash Function:")
-test_insert2()
-print()
-clearTable()
+#print()
+#print("Pagh Hash Function:")
+#test_insert()
+#print()
+#clearTable()
+#print("Perfect Hash Function:")
+#test_insert2()
+#print()
+#clearTable()
 print("Bin Hashing: ")
 test_insert3()
 print()
-clearTable()
+#print(hashTable)
+#clearTable()

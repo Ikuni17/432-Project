@@ -11,16 +11,18 @@ def insert(value):
     j = 0
     while j < maxLoop:
         for i in range(len(Experiment.hashFunctions)):
-            #indexOffset = Experiment.hashFunctions[i](value)
-            #realIndex = indexOffset + i * Experiment.quarterTable
-            realIndex = Experiment.hashFunctions[i](value)
-            if Experiment.hashTable[realIndex] is None:
-                Experiment.hashTable[realIndex] = value
+            if Experiment.useQuarterTable:
+                indexOffset = Experiment.hashFunctions[i](value)
+                index = indexOffset + i * Experiment.quarterTable
+            else:
+                index = Experiment.hashFunctions[i](value)
+            if Experiment.hashTable[index] is None:
+                Experiment.hashTable[index] = value
                 return True
             # This else statement actually fails to insert at a lower load factor
             else:
                 # There is an element in the index so swap them. This is the Cuckoo step and previous value will try to be hashed
-                Experiment.hashTable[realIndex], value = value, Experiment.hashTable[realIndex]
+                Experiment.hashTable[index], value = value, Experiment.hashTable[index]
         j+=1
     #print("Unable to insert")
     return False
@@ -29,7 +31,11 @@ def insert(value):
 def lookup(value):
     # Iterate through all four hash functions searching for the value
     for i in range(len(Experiment.hashFunctions)):
-        index = Experiment.hashFunctions[i](value)
+        if Experiment.useQuarterTable:
+            indexOffset = Experiment.hashFunctions[i](value)
+            index = indexOffset + i * Experiment.quarterTable
+        else:
+            index = Experiment.hashFunctions[i](value)
         if Experiment.hashTable[index] is value:
             return index
     print("Value not in table")
