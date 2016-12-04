@@ -9,20 +9,20 @@ import perfection
 # Number of times to run the experiment
 experimentRuns = 5
 # Using a prime number for tableSize helps the hash functions
-#tableSize = 17
+# tableSize = 17
 tableSize = 1049
-#tableSize = 100003
+# tableSize = 100003
 # Maximum amount of attempts to "cuckoo" elements
 maxLoop = 8
-# Divide the table for two hash function mapping to distinct sections
+# Divide the table for two hash functions mapping to distinct sections
 halfTable = int(tableSize / 2)
 useHalfTable = False
-# Divide the table for four hash function mapping to distinct sections
+# Divide the table for four hash functions mapping to distinct sections
 quarterTable = int(tableSize / 4)
 useQuarterTable = False
-# A list filled with None to represent an array
+# A list filled with None to represent an empty array
 hashTable = [None] * tableSize
-# A list of values to insert, enough to reach a load factor of 1.0 theoretically
+# A list of values to insert, enough to reach a load factor of exactly 1.0 theoretically
 valuesToInsert = random.sample(range(tableSize * 10), tableSize)
 
 
@@ -67,19 +67,12 @@ def hashFun4(key):
         return r % tableSize
 
 
+# Lists of Python functions to iterate through
 twoHashFunctions = [hashFun1, hashFun2]
 fourHashFunctions = [hashFun1, hashFun2, hashFun3, hashFun4]
 
 
-# This was just a test, not actually a perfect hash
-def perfectHash(key):
-    somePrime = 15485863
-    k = 1234
-    index = ((k * key) % somePrime) % tableSize
-    return index
-
-
-# Reset hashTable
+# Reset hashTable to "empty"
 def clearTable():
     global hashTable
     hashTable = [None] * tableSize
@@ -103,60 +96,71 @@ def perfectTester():
     print()
 
 
+# Tests the load factor achieved by Bin Hashing
 def binTester():
-    count = 0
-    count2 = 0
+    inserted = 0
+    notInserted = 0
+    # Iterate through all integers in the list
     for values in range(len(valuesToInsert)):
+        # Try to insert the current integer
         check = binInsert(valuesToInsert[values])
-        # print(binLookup(valuesToInsert[values]))
+        # Succeed to insert
         if check is True:
-            count += 1
+            inserted += 1
+        # Failed to insert
         else:
-            count2 += 1
-            # binDelete(valuesToInsert[values])
-    print("Inserted: ", count)
-    print("Not Inserted: ", count2)
-    print("Load Factor: ", (count / tableSize))
+            notInserted += 1
+    # Print results after the loop terminates
+    print("Inserted: ", inserted)
+    print("Not Inserted: ", notInserted)
+    print("Load Factor: ", (inserted / tableSize))
 
 
+# Tests the load factor achieved by Cuckoo Hashing
 def cuckooTester():
-    count = 0
-    count2 = 0
+    inserted = 0
+    notInserted = 0
+    # Iterate through all integers in the list
     for values in range(len(valuesToInsert)):
+        # Try to insert the current integer
         check = cuckooInsert(valuesToInsert[values])
-        # print(cuckooLookup(valuesToInsert[values]))
+        # Succeed to insert
         if check is True:
-            count += 1
+            inserted += 1
+        # Failed to insert
         else:
-            count2 += 1
-            # cuckooDelete(valuesToInsert[values])
-    print("Inserted: ", count)
-    print("Not Inserted: ", count2)
-    print("Load Factor: ", (count / tableSize))
+            notInserted += 1
+    # Print results after the loop terminates
+    print("Inserted: ", inserted)
+    print("Not Inserted: ", notInserted)
+    print("Load Factor: ", (inserted / tableSize))
 
 
 # This will use four hash functions instead of two and theoretically should reach load factor of 0.97 before
 # failing to insert. Could potentially reach 0.99 if we map the four functions to a bin of two cells each.
-
 def binInsert(value):
-    # Iterate through all four hash functions until able to insert or return false if not able
     j = 0
     while j < maxLoop:
+        # Iterate through all four hash functions until able to insert without a collision or maxLoop is reached
         for i in range(len(fourHashFunctions)):
-            # if useQuarterTable:
+            # Hash the value to get the index offset. The index offset is between 0 and quarterTable
             indexOffset = fourHashFunctions[i](value)
+            # Since each hash function corresponds to a unique section of the hash table, 'i' will correspond to
+            # the section. For example, presume our indexOffset was 3 and our tableSize is 100. Each hash function
+            # corresponds to 25 indices, so if we were using hash function 2: i = 2. The correct index would then be
+            # index = 3 + (2 * 25) = 53
             index = indexOffset + (i * quarterTable)
-            # else:
-            #    index = fourHashFunctions[i](value)
+            # If the index is empty insert the element and break the loops by returning
             if hashTable[index] is None:
                 hashTable[index] = value
                 return True
-            # This else statement actually fails to insert at a lower load factor
+            # Otherwise a collision occured, swap the element currently in the table with the one we're trying to insert
+            # When we return to the top of the loop, the element we removed will be hashed with the next function and
+            # attempted to be inserted
             else:
-                # There is an element in the index so swap them. This is the Cuckoo step and previous value will try to be hashed
                 hashTable[index], value = value, hashTable[index]
         j += 1
-    # print("Unable to insert")
+    # If we reach this point a cycle has occurred and the element failed to insert
     return False
 
 
@@ -164,11 +168,9 @@ def binInsert(value):
 def binLookup(value):
     # Iterate through all four hash functions searching for the value
     for i in range(len(fourHashFunctions)):
-        # if useQuarterTable:
+        # Refer to binInsert comments to understand this logic
         indexOffset = fourHashFunctions[i](value)
         index = indexOffset + (i * quarterTable)
-        # else:
-        #    index = fourHashFunctions[i](value)
         if hashTable[index] is value:
             # print("Found: ", value, " at index: ", index, " which is: ", hashTable[index])
             return index
@@ -176,50 +178,43 @@ def binLookup(value):
     return None
 
 
+# Remove an element from the hash table
 def binDelete(value):
     # Call lookup to find index, if it exists
     index = binLookup(value)
+    # If index is any number, the lookup was successful so set the value to None to delete it and return success
     if index is not None:
         hashTable[index] = None
         return True
+    # Otherwise the value is not in the table so return failed
     else:
         return False
 
 
 def cuckooInsert(value):
-    # Iterate through all four hash functions until able to insert or return false if not able
     j = 0
     while j < maxLoop:
+        # Iterate through two hash functions until able to insert or return false if not able
         for i in range(len(twoHashFunctions)):
-            # if useHalfTable:
+            # Refer to binInsert comments to understand this logic
             indexOffset = twoHashFunctions[i](value)
             index = indexOffset + (i * halfTable)
-            # else:
-            #    index = twoHashFunctions[i](value)
             if hashTable[index] is None:
                 hashTable[index] = value
                 return True
-            # This else statement actually fails to insert at a lower load factor
             else:
-                # There is an element in the index so swap them. This is the Cuckoo step and previous value will try to be hashed
                 hashTable[index], value = value, hashTable[index]
         j += 1
-    # print("Unable to insert")
     return False
 
 
 # Return the index of a value if it is in the table
 def cuckooLookup(value):
-    # Iterate through all four hash functions searching for the value
     for i in range(len(twoHashFunctions)):
-        # if useHalfTable:
         indexOffset = twoHashFunctions[i](value)
         index = indexOffset + (i * halfTable)
-        # else:
-        #    index = twoHashFunctions[i](value)
         if hashTable[index] is value:
             return index
-    # print("Value not in table")
     return None
 
 
@@ -261,14 +256,16 @@ def runExperiment():
     print("Starting experiment with table size: ", tableSize, "\n")
 
     for i in range(experimentRuns):
-        print("\nStarting iteration: ", i+1)
+        print("\nStarting iteration: ", i + 1)
         print("Clearing hash table and generating a new input set\n")
         clearTable()
+
+        # Generate the input set and save it to an external text file
         valuesToInsert = random.sample(range(tableSize * 10), tableSize)
-        sInputSet = "Results\\inputSet" + str(i+1) +".txt"
+        sInputSet = "Results\\inputSet" + str(i + 1) + ".txt"
         inputSetFile = open(sInputSet, "w")
         for j in range(len(valuesToInsert)):
-            inputSetFile.write(str(valuesToInsert[j])+ "\n")
+            inputSetFile.write(str(valuesToInsert[j]) + "\n")
         inputSetFile.close()
 
         print("Performing Bin Hashing insert and lookup")
@@ -282,11 +279,11 @@ def runExperiment():
             loadFactor = insertSuccess / tableSize
 
             start = timer()
-            deleteCheck = binInsert(valuesToInsert[values])
+            insertCheck = binInsert(valuesToInsert[values])
             end = timer()
-            deleteTime = end - start
-            insertFile.write(str(loadFactor) + " " + str(deleteTime) + "\n")
-            if deleteCheck is True:
+            insertTime = end - start
+            insertFile.write(str(loadFactor) + " " + str(insertTime) + "\n")
+            if insertCheck is True:
                 insertSuccess += 1
 
             start = timer()
@@ -301,6 +298,7 @@ def runExperiment():
         insertFile.close()
         lookupSucFile.close()
         lookupFailFile.close()
+        print("Load factor achieved: ", loadFactor)
 
         print("Performing Bin Hashing delete")
         deleteFile = open(sBinHashDelete, "a")
@@ -330,11 +328,11 @@ def runExperiment():
             loadFactor = insertSuccess / tableSize
 
             start = timer()
-            deleteCheck = cuckooInsert(valuesToInsert[values])
+            insertCheck = cuckooInsert(valuesToInsert[values])
             end = timer()
-            deleteTime = end - start
-            insertFile.write(str(loadFactor) + " " + str(deleteTime) + "\n")
-            if deleteCheck is True:
+            insertTime = end - start
+            insertFile.write(str(loadFactor) + " " + str(insertTime) + "\n")
+            if insertCheck is True:
                 insertSuccess += 1
 
             start = timer()
@@ -349,6 +347,7 @@ def runExperiment():
         insertFile.close()
         lookupSucFile.close()
         lookupFailFile.close()
+        print("Load factor achieved: ", loadFactor)
 
         print("Performing Cuckoo Hashing delete")
         deleteFile = open(sCuckooHashDelete, "a")
@@ -372,7 +371,7 @@ def main():
 
     print("Table Size: ", tableSize, "\n")
     print("Perfect Hashing:")
-    #perfectTester()
+    # perfectTester()
     # print(hashTable)
     # print()
     # clearTable()
@@ -391,5 +390,5 @@ def main():
     print()
 
 
-main()
-#runExperiment()
+#main()
+runExperiment()
