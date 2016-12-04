@@ -1,4 +1,3 @@
-# This file will handle driving the experiment, outputting the results and utility functions.
 import os
 import random
 import sys
