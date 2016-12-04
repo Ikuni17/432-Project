@@ -146,8 +146,8 @@ def binInsert(value):
             indexOffset = fourHashFunctions[i](value)
             # Since each hash function corresponds to a unique section of the hash table, 'i' will correspond to
             # the section. For example, presume our indexOffset was 3 and our tableSize is 100. Each hash function
-            # corresponds to 25 indices, so if we were using hash function 2: i = 2. The correct index would then be
-            # index = 3 + (2 * 25) = 53
+            # corresponds to 25 indices (0-24, 25-49, 50-74, 75-99), so if we were using hash function 2: i = 1.
+            # The correct index would then be index = 3 + (1 * 25) = 28
             index = indexOffset + (i * quarterTable)
             # If the index is empty insert the element and break the loops by returning
             if hashTable[index] is None:
