@@ -1,6 +1,3 @@
-Each iteration needs to save files unique to it,
-for example "perfectHash1", "perfectHash2", etc
-
 When the time recorded for an operation is written to file it should be in the format:
 <Load Factor>" "<Time Taken>"\n"
 This can be read into Excel easily and we can plot load factor vs time taken
@@ -10,9 +7,9 @@ Loop through 5 or 10 times:
 2. Save input integers into a file in case needed later. (newline delimited)
 3. Generate a perfect hash function
 4. Loop through the random integers and record time taken for:
-    4a. Inserting an element into the hash table (perfectHashInsertion#.txt)
-    4b. Looking up the same element (perfectHashLookup#.txt)
-5. Loop through the random intergers again and record time taken to delete each element (perfectHashDelete#.txt)
+    4a. Inserting an element into the hash table (perfectHashInsertion.txt)
+    4b. Looking up the same element (perfectHashLookup.txt)
+5. Loop through the random intergers again and record time taken to delete each element (perfectHashDelete.txt)
 6. Repeat steps 4 and 5 for Bin Hashing and then Cuckoo Hashing
 
 Compile each method's operations in Excel
@@ -21,4 +18,6 @@ Additional things to consider:
 1. Load factor at which the first element cannot be inserted for Bin/Cuckoo
 2. Do we need to include the overhead of generating the perfect hash function?
     Otherwise it will be much better than the other methods easily.
-3. It should be possible to just append to the end of the file so multiple files wouldn't be necessary for each operation
+3. What should maxLoop be? what did they use in the paper?
+4. Keep track of successful/failed lookups/deletes?
+5. They resize the tables if an insertion fails in the paper, should we? (For Cuckoo Hashing)
