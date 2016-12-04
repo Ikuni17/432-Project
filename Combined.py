@@ -3,6 +3,7 @@
 import random
 import sys
 import math
+import perfection
 
 # Using a prime number for tableSize helps the hash functions
 tableSize = 1049
@@ -18,7 +19,7 @@ useQuarterTable = False
 # A list filled with None to represent an array
 hashTable = [None] * tableSize
 # A list of values to insert, enough to reach a load factor of 1.0 theoretically
-valuesToInsert = random.sample(range(sys.maxsize), tableSize)
+valuesToInsert = random.sample(range(tableSize*10), tableSize)
 
 
 # Division method
@@ -83,17 +84,16 @@ def clearTable():
 def perfectTester():
     count = 0
     count2 = 0
-    for values in range(len(valuesToInsert)):
-        key = perfectHash(valuesToInsert[values])
-        if hashTable[key] is None:
-            hashTable[key] = valuesToInsert[values]
-            count += 1
-        else:
-            # print("Collision moving to next element")
-            count2 += 1
-    print("Inserted: ", count)
-    print("Not Inserted: ", count2)
-    print("Load Factor: ", (count / tableSize))
+    # Tests insertion using a perfect hash.
+    perfect_hash_table = perfection.make_hash(valuesToInsert)
+    params = perfection.hash_parameters(valuesToInsert)
+    print("Inserted: ", len(valuesToInsert))
+    print("Not Inserted: 0")
+    print("Load Factor: ", (len(valuesToInsert)/params.t))
+    function = u"\nperfect_hash(i):\n    static r = {}\n    static t = {}\n\n    x = i mod t //({})\n    y = i div t //({})\n    return x + r[y]\n".format(params.r, params.t, params.t,
+                                                                              params.t)
+    print("Perfect Hash Function: ", function)
+
     # print(hashTable)
 
 
@@ -221,8 +221,8 @@ def cuckooDelete(value):
 
 def main():
     print("Table Size: ", tableSize)
-    #print("Perfect Hash Function:")
-    #perfectTester()
+    print("Perfect Hashing:")
+    perfectTester()
     #print(hashTable)
     #print()
     #clearTable()
