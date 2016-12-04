@@ -10,10 +10,10 @@ import perfection
 experimentRuns = 5
 # Using a prime number for tableSize helps the hash functions
 #tableSize = 17
-#tableSize = 1049
-tableSize = 100003
+tableSize = 1049
+#tableSize = 100003
 # Maximum amount of attempts to "cuckoo" elements
-maxLoop = 1000
+maxLoop = 8
 # Divide the table for two hash function mapping to distinct sections
 halfTable = int(tableSize / 2)
 useHalfTable = False
@@ -367,9 +367,12 @@ def runExperiment():
 
 
 def main():
+    global useQuarterTable
+    global useHalfTable
+
     print("Table Size: ", tableSize, "\n")
     print("Perfect Hashing:")
-    perfectTester()
+    #perfectTester()
     # print(hashTable)
     # print()
     # clearTable()
@@ -388,5 +391,5 @@ def main():
     print()
 
 
-# main()
-runExperiment()
+main()
+#runExperiment()
