@@ -226,6 +226,35 @@ def cuckooDelete(value):
     else:
         return False
 
+def chainedInsert(value):
+    index = hashFun1(value)
+    if hashTable[index] is None:
+        hashTable[index] = [value]
+        return True
+        # print("Inserted {} on index {}".format(value, index))
+    else:
+        hashTable[index].append(value)
+        return False
+        # print("Appended {} on index {}".format(value, index))
+
+def chainedLookup(value):
+    index = hashFun1(value)
+    if hashTable[index] is not None:
+        for item in hashTable[index]:
+            if item is value:
+                return index
+    else:
+        return None
+
+def chainedDelete(value):
+    index = chainedLookup(value)
+    if hashTable[index] is not None:
+        for item in hashTable[index]:
+            if item is value:
+                hashTable[index].remove(value)
+    else:
+        return None
+
 
 def runExperiment():
     global useHalfTable
@@ -243,6 +272,10 @@ def runExperiment():
     sPerfectHashInsert = "Results\\perfectHashInsert.txt"
     sPerfectHashLookup = "Results\\perfectHashLookup.txt"
     sPerfectHashDelete = "Results\\perfectHashDelete.txt"
+    sChainedHashInsert = "Results\\chainedHashInsert.txt"
+    sChainedHashLookupSuc = "Results\\chainedHashLookupSuccess.txt"
+    sChainedHashLookupFail = "Results\\chainedHashLookupFail.txt"
+    sChainedHashDelete = "Results\\chainedHashDelete.txt"
     sBinHashInsert = "Results\\binHashInsert.txt"
     sBinHashLookupSuc = "Results\\binHashLookupSuccess.txt"
     sBinHashLookupFail = "Results\\binHashLookupFail.txt"
@@ -266,6 +299,55 @@ def runExperiment():
         for j in range(len(valuesToInsert)):
             inputSetFile.write(str(valuesToInsert[j]) + "\n")
         inputSetFile.close()
+
+        print("Performing Chained Hashing insert and lookup")
+        insertSuccess = 0
+        insertFile = open(sChainedHashInsert, "a")
+        lookupSucFile = open(sChainedHashLookupSuc, "a")
+        lookupFailFile = open(sChainedHashLookupFail, "a")
+        for value in valuesToInsert:
+            loadFactor = insertSuccess / tableSize
+
+            start = timer()
+            insertCheck = chainedInsert(value)
+            end = timer()
+            insertTime = end - start
+            insertFile.write(str(loadFactor) + " " + str(insertTime) + "\n")
+            if insertCheck is True:
+                insertSuccess += 1
+
+            start = timer()
+            lookupCheck = chainedLookup(value)
+            end = timer()
+            lookupTime = end - start
+            if lookupCheck is None:
+                lookupFailFile.write(str(loadFactor) + " " + str(lookupTime) + "\n")
+            else:
+                lookupSucFile.write(str(loadFactor) + " " + str(lookupTime) + "\n")
+
+        insertFile.close()
+        lookupSucFile.close()
+        lookupFailFile.close()
+        print("Load factor achieved: ", loadFactor)
+
+        print("Performing Chained Hashing delete")
+        deleteFile = open(sChainedHashDelete, "a")
+        for value in valuesToInsert:
+            loadFactor = insertSuccess / tableSize
+
+            start = timer()
+            deleteCheck = chainedDelete(value)
+            end = timer()
+            deleteTime = end - start
+            deleteFile.write(str(loadFactor) + " " + str(deleteTime) + "\n")
+            if deleteCheck is True:
+                insertSuccess -= 1
+
+        deleteFile.close()
+        print("Clearing hash table\n")
+        clearTable()
+
+
 
         print("Performing Bin Hashing insert and lookup")
         insertSuccess = 0
