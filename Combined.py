@@ -9,10 +9,10 @@ import perfection
 experimentRuns = 5
 # Using a prime number for tableSize helps the hash functions
 # tableSize = 17
-tableSize = 1049
-# tableSize = 100003
+#tableSize = 1049
+tableSize = 100003
 # Maximum amount of attempts to "cuckoo" elements
-maxLoop = 8
+maxLoop = 100
 # Divide the table for two hash functions mapping to distinct sections
 halfTable = int(tableSize / 2)
 useHalfTable = False
@@ -35,23 +35,25 @@ def hashFun1(key):
         return key % tableSize
 
 
-# Multiplication method
+# Multiplication method variant
 def hashFun2(key):
+    A = (math.sqrt(5) - 1) / 2
+    if useQuarterTable:
+        return math.floor(quarterTable * ((key * A) % 1))
+    elif useHalfTable:
+        return math.floor(halfTable * ((key * A) % 1))
+    else:
+        return math.floor(tableSize * ((key * A) % 1))
+
+
+# Multiplication method
+def hashFun3(key):
     if useQuarterTable:
         return math.floor(key / quarterTable) % quarterTable
     elif useHalfTable:
         return math.floor(key / halfTable) % halfTable
     else:
         return math.floor(key / tableSize) % tableSize
-
-
-# Multiplication method variant
-def hashFun3(key):
-    A = (math.sqrt(5) - 1) / 2
-    if useQuarterTable:
-        return math.floor(quarterTable * ((key * A) % 1))
-    else:
-        return math.floor(tableSize * ((key * A) % 1))
 
 
 # Folding method
@@ -62,6 +64,8 @@ def hashFun4(key):
 
     if useQuarterTable:
         return r % quarterTable
+    elif useHalfTable:
+        return r % halfTable
     else:
         return r % tableSize
 
@@ -93,6 +97,25 @@ def perfectTester():
 
     # print(hashTable)
     print()
+
+
+def chainTester():
+    inserted = 0
+    notInserted = 0
+    # Iterate through all integers in the list
+    for values in range(len(valuesToInsert)):
+        # Try to insert the current integer
+        check = chainedInsert(valuesToInsert[values])
+        # Succeed to insert
+        if check is True:
+            inserted += 1
+        # Failed to insert
+        else:
+            notInserted += 1
+    # Print results after the loop terminates
+    print("Full Indices: ", inserted)
+    print("Empty Indices: ", notInserted)
+    print("Load Factor: ", (inserted / tableSize))
 
 
 # Tests the load factor achieved by Bin Hashing
@@ -226,6 +249,7 @@ def cuckooDelete(value):
     else:
         return False
 
+
 def chainedInsert(value):
     index = hashFun1(value)
     if hashTable[index] is None:
@@ -237,6 +261,7 @@ def chainedInsert(value):
         return False
         # print("Appended {} on index {}".format(value, index))
 
+
 def chainedLookup(value):
     index = hashFun1(value)
     if hashTable[index] is not None:
@@ -245,6 +270,7 @@ def chainedLookup(value):
                 return index
     else:
         return None
+
 
 def chainedDelete(value):
     index = chainedLookup(value)
@@ -346,8 +372,6 @@ def runExperiment():
         deleteFile.close()
         print("Clearing hash table\n")
         clearTable()
-
-
 
         print("Performing Bin Hashing insert and lookup")
         insertSuccess = 0
@@ -451,11 +475,12 @@ def main():
     global useHalfTable
 
     print("Table Size: ", tableSize, "\n")
-    print("Perfect Hashing:")
+    print("Chained Hashing:")
     # perfectTester()
+    chainTester()
     # print(hashTable)
-    # print()
-    # clearTable()
+    print()
+    clearTable()
     useQuarterTable = True
     useHalfTable = False
     print("Bin Hashing: ")
@@ -471,5 +496,5 @@ def main():
     print()
 
 
-#main()
-runExperiment()
+main()
+# runExperiment()
