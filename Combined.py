@@ -9,7 +9,8 @@ import perfection
 experimentRuns = 5
 # Using a prime number for tableSize helps the hash functions
 # tableSize = 17
-tableSize = 1049
+#tableSize = 1049
+tableSize = 32768
 #tableSize = 100003
 # Maximum amount of attempts to "cuckoo" elements, results seem to plateau after 8 iterations
 maxLoop = 8
