@@ -35,7 +35,7 @@ def hashFun1(key):
         return key % tableSize
 
 
-# Multiplication method variant
+# Multiplication method
 def hashFun2(key):
     A = (math.sqrt(5) - 1) / 2
     if useQuarterTable:
@@ -46,7 +46,7 @@ def hashFun2(key):
         return math.floor(tableSize * ((key * A) % 1))
 
 
-# Multiplication method
+# Multiplication method variant, seems to have high collision rate
 def hashFun3(key):
     if useQuarterTable:
         return math.floor(key / quarterTable) % quarterTable
@@ -56,7 +56,7 @@ def hashFun3(key):
         return math.floor(key / tableSize) % tableSize
 
 
-# Folding method
+# Folding method, seems to have high collision rate
 def hashFun4(key):
     r = 0
     while key:
