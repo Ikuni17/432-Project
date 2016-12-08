@@ -8,7 +8,7 @@ import perfection
 # Number of times to run the experiment
 experimentRuns = 5
 # Using a prime number for tableSize helps the hash functions
-# tableSize = 17
+#tableSize = 17
 #tableSize = 1049
 #tableSize = 32768
 tableSize = 100003
@@ -197,6 +197,7 @@ def binLookup(value):
             # print("Found: ", value, " at index: ", index, " which is: ", hashTable[index])
             return index
     # print("Value not in table")
+    #print("Not found")
     return None
 
 
@@ -233,10 +234,12 @@ def cuckooInsert(value):
 # Return the index of a value if it is in the table
 def cuckooLookup(value):
     for i in range(len(twoHashFunctions)):
+        #print("Lookup: ", i)
         indexOffset = twoHashFunctions[i](value)
         index = indexOffset + (i * halfTable)
         if hashTable[index] is value:
             return index
+    #print("Not found")
     return None
 
 
@@ -392,10 +395,10 @@ def runExperiment():
                 insertSuccess += 1
 
             start = timer()
-            lookupCheck = binLookup(valuesToInsert[values])
+            binLookupCheck = binLookup(valuesToInsert[values])
             end = timer()
             lookupTime = end - start
-            if lookupCheck is None:
+            if binLookupCheck is None:
                 lookupFailFile.write(str(loadFactor) + " " + str(lookupTime) + "\n")
             else:
                 lookupSucFile.write(str(loadFactor) + " " + str(lookupTime) + "\n")
@@ -440,11 +443,16 @@ def runExperiment():
             if insertCheck is True:
                 insertSuccess += 1
 
+        for values in range(len(valuesToInsert)):
+            #lookupCheck = None
+            #print(valuesToInsert[values])
             start = timer()
-            lookupCheck = cuckooLookup(valuesToInsert[values])
+            cuckooLookupCheck = cuckooLookup(valuesToInsert[values])
             end = timer()
             lookupTime = end - start
-            if lookupCheck is None:
+            #print(cuckooLookupCheck)
+            if cuckooLookupCheck is None:
+                print("Writing to failed file")
                 lookupFailFile.write(str(loadFactor) + " " + str(lookupTime) + "\n")
             else:
                 lookupSucFile.write(str(loadFactor) + " " + str(lookupTime) + "\n")
