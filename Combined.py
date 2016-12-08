@@ -10,8 +10,8 @@ experimentRuns = 5
 # Using a prime number for tableSize helps the hash functions
 # tableSize = 17
 #tableSize = 1049
-tableSize = 32768
-#tableSize = 100003
+#tableSize = 32768
+tableSize = 100003
 # Maximum amount of attempts to "cuckoo" elements, results seem to plateau after 8 iterations
 maxLoop = 8
 # Divide the table for two hash functions mapping to distinct sections
@@ -23,8 +23,7 @@ useQuarterTable = False
 # A list filled with None to represent an empty array
 hashTable = [None] * tableSize
 # A list of values to insert, enough to reach a load factor of exactly 1.0 theoretically
-valuesToInsert = random.sample(range(tableSize * 10), tableSize)
-
+valuesToInsert = random.sample(range(sys.maxsize), tableSize)
 
 # Division method
 def hashFun1(key):
@@ -320,7 +319,7 @@ def runExperiment():
         clearTable()
 
         # Generate the input set and save it to an external text file
-        valuesToInsert = random.sample(range(tableSize * 10), tableSize)
+        valuesToInsert = random.sample(range(sys.maxsize), tableSize)
         sInputSet = "Results\\inputSet" + str(i + 1) + ".txt"
         inputSetFile = open(sInputSet, "w")
         for j in range(len(valuesToInsert)):
@@ -497,5 +496,5 @@ def main():
     print()
 
 
-main()
-# runExperiment()
+#main()
+runExperiment()
