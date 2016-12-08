@@ -8,7 +8,7 @@ import perfection
 # Number of times to run the experiment
 experimentRuns = 5
 # Using a prime number for tableSize helps the hash functions
-#tableSize = 17
+#tableSize = 7
 #tableSize = 1049
 #tableSize = 32768
 tableSize = 100003
@@ -376,13 +376,12 @@ def runExperiment():
         print("Clearing hash table\n")
         clearTable()
 
-        print("Performing Bin Hashing insert and lookup")
+        print("Performing Bin Hashing insert")
         insertSuccess = 0
         useHalfTable = False
         useQuarterTable = True
         insertFile = open(sBinHashInsert, "a")
-        lookupSucFile = open(sBinHashLookupSuc, "a")
-        lookupFailFile = open(sBinHashLookupFail, "a")
+
         for values in range(len(valuesToInsert)):
             loadFactor = insertSuccess / tableSize
 
@@ -391,27 +390,30 @@ def runExperiment():
             end = timer()
             insertTime = end - start
             insertFile.write(str(loadFactor) + " " + str(insertTime) + "\n")
+
             if insertCheck is True:
                 insertSuccess += 1
+
+        insertFile.close()
+
+        print("Load factor achieved: ", loadFactor)
+
+        print("Performing Bin Hashing lookup and delete")
+        deleteFile = open(sBinHashDelete, "a")
+        lookupSucFile = open(sBinHashLookupSuc, "a")
+        lookupFailFile = open(sBinHashLookupFail, "a")
+        for values in range(len(valuesToInsert)):
+            loadFactor = insertSuccess / tableSize
 
             start = timer()
             binLookupCheck = binLookup(valuesToInsert[values])
             end = timer()
             lookupTime = end - start
+
             if binLookupCheck is None:
                 lookupFailFile.write(str(loadFactor) + " " + str(lookupTime) + "\n")
             else:
                 lookupSucFile.write(str(loadFactor) + " " + str(lookupTime) + "\n")
-
-        insertFile.close()
-        lookupSucFile.close()
-        lookupFailFile.close()
-        print("Load factor achieved: ", loadFactor)
-
-        print("Performing Bin Hashing delete")
-        deleteFile = open(sBinHashDelete, "a")
-        for values in range(len(valuesToInsert)):
-            loadFactor = insertSuccess / tableSize
 
             start = timer()
             deleteCheck = binDelete(valuesToInsert[values])
@@ -422,16 +424,17 @@ def runExperiment():
                 insertSuccess -= 1
 
         deleteFile.close()
+        lookupSucFile.close()
+        lookupFailFile.close()
         print("Clearing hash table\n")
         clearTable()
 
-        print("Performing Cuckoo Hashing insert and lookup")
+        print("Performing Cuckoo Hashing insert")
         insertSuccess = 0
         useHalfTable = True
         useQuarterTable = False
         insertFile = open(sCuckooHashInsert, "a")
-        lookupSucFile = open(sCuckooHashLookupSuc, "a")
-        lookupFailFile = open(sCuckooHashLookupFail, "a")
+
         for values in range(len(valuesToInsert)):
             loadFactor = insertSuccess / tableSize
 
@@ -443,29 +446,25 @@ def runExperiment():
             if insertCheck is True:
                 insertSuccess += 1
 
+        insertFile.close()
+
+        print("Load factor achieved: ", loadFactor)
+
+        print("Performing Cuckoo Hashing lookup and delete")
+        deleteFile = open(sCuckooHashDelete, "a")
+        lookupSucFile = open(sCuckooHashLookupSuc, "a")
+        lookupFailFile = open(sCuckooHashLookupFail, "a")
         for values in range(len(valuesToInsert)):
-            #lookupCheck = None
-            #print(valuesToInsert[values])
+            loadFactor = insertSuccess / tableSize
+
             start = timer()
             cuckooLookupCheck = cuckooLookup(valuesToInsert[values])
             end = timer()
             lookupTime = end - start
-            #print(cuckooLookupCheck)
             if cuckooLookupCheck is None:
-                print("Writing to failed file")
                 lookupFailFile.write(str(loadFactor) + " " + str(lookupTime) + "\n")
             else:
                 lookupSucFile.write(str(loadFactor) + " " + str(lookupTime) + "\n")
-
-        insertFile.close()
-        lookupSucFile.close()
-        lookupFailFile.close()
-        print("Load factor achieved: ", loadFactor)
-
-        print("Performing Cuckoo Hashing delete")
-        deleteFile = open(sCuckooHashDelete, "a")
-        for values in range(len(valuesToInsert)):
-            loadFactor = insertSuccess / tableSize
 
             start = timer()
             deleteCheck = cuckooDelete(valuesToInsert[values])
@@ -476,7 +475,8 @@ def runExperiment():
                 insertSuccess -= 1
 
         deleteFile.close()
-
+        lookupSucFile.close()
+        lookupFailFile.close()
 
 def main():
     global useQuarterTable
