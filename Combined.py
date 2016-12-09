@@ -280,8 +280,12 @@ def chainedDelete(value):
         for item in hashTable[index]:
             if item is value:
                 hashTable[index].remove(value)
+                if hashTable[index]:
+                    return False
+                else:
+                    return True
     else:
-        return None
+        return False
 
 
 def runExperiment():
@@ -341,7 +345,7 @@ def runExperiment():
             insertCheck = chainedInsert(value)
             end = timer()
             insertTime = end - start
-            insertFile.write(str(insertTime) + " " + str(loadFactor) + "\n")
+            insertFile.write(str(loadFactor) + " " + str(insertTime) + "\n")
             if insertCheck is True:
                 insertSuccess += 1
 
@@ -350,9 +354,9 @@ def runExperiment():
             end = timer()
             lookupTime = end - start
             if lookupCheck is None:
-                lookupFailFile.write(str(lookupTime) + " " + str(loadFactor) + "\n")
+                lookupFailFile.write(str(loadFactor) + " " + str(lookupTime) + "\n")
             else:
-                lookupSucFile.write(str(lookupTime) + " " + str(loadFactor) + "\n")
+                lookupSucFile.write(str(loadFactor) + " " + str(lookupTime) + "\n")
 
         insertFile.close()
         lookupSucFile.close()
@@ -368,7 +372,7 @@ def runExperiment():
             deleteCheck = chainedDelete(value)
             end = timer()
             deleteTime = end - start
-            deleteFile.write(str(deleteTime) + " " + str(loadFactor) + "\n")
+            deleteFile.write(str(loadFactor) + " " + str(deleteTime) + "\n")
             if deleteCheck is True:
                 insertSuccess -= 1
 
@@ -389,7 +393,7 @@ def runExperiment():
             insertCheck = binInsert(valuesToInsert[values])
             end = timer()
             insertTime = end - start
-            insertFile.write(str(insertTime) + " " + str(loadFactor) + "\n")
+            insertFile.write(str(loadFactor) + " " + str(insertTime) + "\n")
 
             if insertCheck is True:
                 insertSuccess += 1
@@ -411,15 +415,15 @@ def runExperiment():
             lookupTime = end - start
 
             if binLookupCheck is None:
-                lookupFailFile.write(str(lookupTime) + " " + str(loadFactor) + "\n")
+                lookupFailFile.write(str(loadFactor) + " " + str(lookupTime) + "\n")
             else:
-                lookupSucFile.write(str(lookupTime) + " " + str(loadFactor) + "\n")
+                lookupSucFile.write(str(loadFactor) + " " + str(lookupTime) + "\n")
 
             start = timer()
             deleteCheck = binDelete(valuesToInsert[values])
             end = timer()
             deleteTime = end - start
-            deleteFile.write(str(deleteTime) + " " + str(loadFactor) + "\n")
+            deleteFile.write(str(loadFactor) + " " + str(deleteTime) + "\n")
             if deleteCheck is True:
                 insertSuccess -= 1
 
@@ -442,7 +446,7 @@ def runExperiment():
             insertCheck = cuckooInsert(valuesToInsert[values])
             end = timer()
             insertTime = end - start
-            insertFile.write(str(insertTime) + " " + str(loadFactor) + "\n")
+            insertFile.write(str(loadFactor) + " " + str(insertTime) + "\n")
             if insertCheck is True:
                 insertSuccess += 1
 
@@ -462,15 +466,15 @@ def runExperiment():
             end = timer()
             lookupTime = end - start
             if cuckooLookupCheck is None:
-                lookupFailFile.write(str(lookupTime) + " " + str(loadFactor) + "\n")
+                lookupFailFile.write(str(loadFactor) + " " + str(lookupTime) + "\n")
             else:
-                lookupSucFile.write(str(lookupTime) + " " + str(loadFactor) + "\n")
+                lookupSucFile.write(str(loadFactor) + " " + str(lookupTime) + "\n")
 
             start = timer()
             deleteCheck = cuckooDelete(valuesToInsert[values])
             end = timer()
             deleteTime = end - start
-            deleteFile.write(str(deleteTime) + " " + str(loadFactor) + "\n")
+            deleteFile.write(str(loadFactor) + " " + str(deleteTime) + "\n")
             if deleteCheck is True:
                 insertSuccess -= 1
 
