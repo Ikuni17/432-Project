@@ -8,12 +8,14 @@ import perfection
 # Number of times to run the experiment
 experimentRuns = 5
 # Using a prime number for tableSize helps the hash functions
-#tableSize = 7
+#tableSize = 17
 #tableSize = 1049
 #tableSize = 32768
 tableSize = 100003
 # Maximum amount of attempts to "cuckoo" elements, results seem to plateau after 8 iterations
-maxLoop = 8
+#maxLoop = 8
+# Pagh function to calculate maxLoop
+maxLoop = 4 + int(4*math.log(tableSize) / math.log(2) + 0.5)
 # Divide the table for two hash functions mapping to distinct sections
 halfTable = int(tableSize / 2)
 useHalfTable = False
@@ -311,7 +313,8 @@ def runExperiment():
     sCuckooHashLookupFail = "Results\\cuckooHashLookupFail.txt"
     sCuckooHashDelete = "Results\\cuckooHashDelete.txt"
 
-    print("Starting experiment with table size: ", tableSize, "\n")
+    print("Starting experiment with table size: ", tableSize)
+    print("MaxLoop: ", maxLoop, "\n")
 
     for i in range(experimentRuns):
         print("\nStarting iteration: ", i + 1)
