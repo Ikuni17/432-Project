@@ -56,18 +56,15 @@ def hashFun3(key):
         return math.floor(key / tableSize) % tableSize
 
 
-# Folding method, seems to have high collision rate
+# Another multiplication variant
 def hashFun4(key):
-    r = 0
-    while key:
-        r, key = r + key % 100, key // 100
-
+    A = (math.sqrt(17) - 1) / 2
     if useQuarterTable:
-        return r % quarterTable
+        return math.floor(quarterTable * ((key * A) % 1))
     elif useHalfTable:
-        return r % halfTable
+        return math.floor(halfTable * ((key * A) % 1))
     else:
-        return r % tableSize
+        return math.floor(tableSize * ((key * A) % 1))
 
 
 # Lists of Python functions to iterate through
